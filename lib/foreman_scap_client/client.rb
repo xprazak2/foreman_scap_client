@@ -4,6 +4,7 @@ require 'net/http'
 require 'net/https'
 require 'uri'
 require 'open-uri'
+require 'json'
 require 'pry'
 require 'pry-byebug'
 
@@ -95,7 +96,8 @@ module ForemanScapClient
       request['Content-Encoding'] = 'x-bzip2'
       begin
         res = https.request(request)
-        res.value
+        value = res.value
+        foreman_upload_result res
       rescue StandardError => e
         puts res.body if res
         puts "Upload failed: #{e.message}"
@@ -167,5 +169,14 @@ module ForemanScapClient
     def download_uri(download_path)
       foreman_proxy_uri + "#{download_path}"
     end
+
+   def foreman_upload_result(response)
+     parsed = JSON.parse(response.body)
+     if parsed['id']
+       puts "Report uploaded, report id: #{parsed['id']}"
+     else
+      puts "Report not uploaded from proxy to Foreman server, cause: #{parsed['result']}" 
+     end
+   end
   end
 end
