@@ -1,3 +1,4 @@
+require 'rubygems' if RUBY_VERSION.start_with? '1.8'
 require 'yaml'
 require 'tmpdir'
 require 'net/http'
