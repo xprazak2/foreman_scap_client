@@ -7,6 +7,7 @@ require 'uri'
 require 'open-uri'
 require 'open3'
 require 'json'
+require 'posix/spawn'
 
 module ForemanScapClient
   CONFIG_FILE = '/etc/foreman_scap_client/config.yaml'
@@ -41,15 +42,19 @@ module ForemanScapClient
 
     def scan
       puts "DEBUG: running: " + scan_command
-      stdout_str, error_str, result = Open3.capture3(scan_command_env_vars, scan_command)
-      if result.success? || result.exitstatus == 2
+
+      pid, stdin, stdout, stderr = POSIX::Spawn.popen4(scan_command_env_vars, scan_command)
+      errors = stderr.read
+      if errors.empty?
         @report = results_path
       else
         puts 'Scan failed'
-        puts stdout_str
-        puts error_str
+        puts errors
         exit(2)
       end
+    ensure
+      [stdin, stdout, stderr].each { |io| io.close if !io.closed? }
+      Process::waitpid(pid)  
     end
 
     def scan_command_env_vars
