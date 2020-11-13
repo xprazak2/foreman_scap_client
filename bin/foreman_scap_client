@@ -5,7 +5,7 @@ require 'foreman_scap_client'
 if ARGV.size == 1
   ForemanScapClient::Client.new.run(ARGV[0].to_i)
 elsif ARGV.size == 2 && ARGV[0] == 'oval'
-  ForemanScapClient::OvalClient.new.run(ARGV[1].to_1)
+  ForemanScapClient::OvalClient.new.run(ARGV[1].to_i)
 else
   puts "Usage: #{$0} [oval] policy_id"
   puts "  where policy_id is a key used in config file"

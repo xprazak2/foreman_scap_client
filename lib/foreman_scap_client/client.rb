@@ -1,13 +1,13 @@
-require 'foreman_scap_client/client_base'
+require 'foreman_scap_client/base_client'
 
 module ForemanScapClient
-  class Client < ClientBase
+  class Client < BaseClient
     attr_reader :tailored
 
     private
 
     def policy_namespace
-      'ds'
+      :ds
     end
 
     # remove when we have made changes to puppet module/ansible role to start namespacing existing ds policies

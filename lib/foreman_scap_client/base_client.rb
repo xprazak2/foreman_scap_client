@@ -10,7 +10,7 @@ require 'json'
 
 module ForemanScapClient
   class BaseClient
-    attr_reader :config, :policy_id,
+    attr_reader :policy_id, :config
 
     CONFIG_FILE = '/etc/foreman_scap_client/config.yaml'
 

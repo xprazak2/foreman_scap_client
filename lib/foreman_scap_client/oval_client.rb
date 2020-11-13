@@ -5,7 +5,7 @@ module ForemanScapClient
     private
 
     def policy_namespace
-      'oval'
+      :oval
     end
 
     def ensure_scan_files
@@ -13,11 +13,19 @@ module ForemanScapClient
     end
 
     def upload_uri
-      foreman_proxy_uri + "/compliance/oval/#{@policy_id}"
+      foreman_proxy_uri + "/compliance/oval_report/#{@policy_id}"
     end
 
     def scan_command
       "oscap oval eval --results #{results_path} #{policy_from_config[:content_path]}"
+    end
+
+    def print_upload_result(parsed)
+      if parsed['reported_at']
+        puts "Report successfully uploaded at #{parsed['reported_at']}"
+      else
+        puts "Report not uploaded, cause: #{parsed['result']}"
+      end
     end
   end
 end
